@@ -3770,7 +3770,7 @@ window.MW = window.MW || {};
     document.documentElement.lang = v;
     document.documentElement.dir = v === "ar" ? "rtl" : "ltr";
     render();
-    if (state.project) openProject(state.project, true);
+    if (state.project) openProject(state.project, true, "replace");
   }
 
   /* ---------- chrome -------------------------------------- */
@@ -3811,10 +3811,13 @@ window.MW = window.MW || {};
     /* the pitch rides only with the pillar about where she's headed */
     el.maha.innerHTML = MW.renderMaha(l) + MW.renderServices(l) + MW.renderCloser(l, "maha");
 
-    showView(state.view, true);
+    /* A render never changes the route — it repaints the one we are
+       already on. Writing here would clobber a deep link before
+       fromHash has had a chance to read it. */
+    showView(state.view, true, "none");
   }
 
-  function showView(id, silent) {
+  function showView(id, silent, hist) {
     state.view = id;
     document.documentElement.setAttribute("data-world", id === "hub" ? "" : id);
 
@@ -3844,8 +3847,17 @@ window.MW = window.MW || {};
     /* carry the visitor into the world instead of leaving them at the top */
     if (!silent && id !== "hub") autoEnter(scope);
 
-    var hash = id === "hub" ? "#/" : "#/" + id;
-    if (location.hash !== hash) history.replaceState(null, "", hash);
+    mark(id === "hub" ? "#/" : "#/" + id, hist);
+  }
+
+  /* "push"    — the visitor went somewhere: leave a trail
+     "replace" — same place, new URL shape: overwrite
+     "none"    — we are here *because* of the history: write nothing */
+  function mark(hash, hist) {
+    if (hist === "none") return;
+    if (location.hash === hash) return;
+    if (hist === "push") history.pushState(null, "", hash);
+    else history.replaceState(null, "", hash);
   }
 
   /* ---------- cinematic auto-scroll ----------------------- */
@@ -3907,7 +3919,7 @@ window.MW = window.MW || {};
 
   /* ---------- the wipe transition ------------------------- */
   function wipeTo(id, origin, worldVar) {
-    if (reduced) { showView(id); return; }
+    if (reduced) { showView(id, false, "push"); return; }
 
     var v = el.veil;
     var x = origin ? origin.x : window.innerWidth / 2;
@@ -3921,12 +3933,12 @@ window.MW = window.MW || {};
     v.classList.add("is-wiping");
 
     /* swap almost at once, so the click lands rather than waits */
-    setTimeout(function () { showView(id); }, 150);
+    setTimeout(function () { showView(id, false, "push"); }, 150);
     setTimeout(function () { v.classList.remove("is-wiping"); }, 940);
   }
 
   /* ---------- project view -------------------------------- */
-  function openProject(id, silent) {
+  function openProject(id, silent, hist) {
     state.project = id;
     el.pview.innerHTML = MW.renderProject(L(), id);
     el.pview.classList.add("is-open");
@@ -3940,18 +3952,17 @@ window.MW = window.MW || {};
       var close = el.pview.querySelector("[data-close-project]");
       if (close) close.focus({ preventScroll: true });
     }
-    var hash = "#/creator/" + id;
-    if (location.hash !== hash) history.replaceState(null, "", hash);
+    mark("#/creator/" + id, hist);
   }
 
-  function closeProject() {
+  function closeProject(hist) {
     state.project = null;
     el.pview.classList.remove("is-open");
     el.pview.removeAttribute("data-project");
     document.documentElement.removeAttribute("data-project");
     el.pview.innerHTML = "";
     document.body.classList.remove("is-locked");
-    history.replaceState(null, "", "#/creator");
+    mark("#/creator", hist);
   }
 
   /* ---------- the reach panel ----------------------------- */
@@ -3971,13 +3982,22 @@ window.MW = window.MW || {};
   }
 
   /* ---------- routing ------------------------------------- */
+  /* Runs on boot and on every Back/Forward. It reports what the URL
+     already says, so it writes no history of its own, and it touches
+     only what actually differs — otherwise Back out of a project
+     would tear down and rebuild the world behind it. */
   function fromHash() {
     var h = (location.hash || "").replace(/^#\/?/, "").split("/").filter(Boolean);
     var view = h[0] || "hub";
-    if (["engineer", "creator", "solver", "maha"].indexOf(view) === -1) view = "hub";
-    showView(view, true);
-    if (view === "creator" && h[1] && MW.projectOrder.indexOf(h[1]) !== -1) {
-      openProject(h[1], true);
+    if (MW.worlds.indexOf(view) === -1) view = "hub";
+
+    var proj = (view === "creator" && h[1] &&
+                MW.projectOrder.indexOf(h[1]) !== -1) ? h[1] : null;
+
+    if (view !== state.view) showView(view, true, "none");
+    if (proj !== state.project) {
+      if (proj) openProject(proj, true, "none");
+      else closeProject("none");
     }
   }
 
@@ -4015,13 +4035,13 @@ window.MW = window.MW || {};
       var proj = e.target.closest("[data-project]");
       if (proj && proj.tagName === "BUTTON") {
         var pid = proj.getAttribute("data-project");
-        if (pop(proj)) setTimeout(function () { openProject(pid); }, 260);
-        else openProject(pid);
+        if (pop(proj)) setTimeout(function () { openProject(pid, false, "push"); }, 260);
+        else openProject(pid, false, "push");
         return;
       }
 
       if (e.target.closest("[data-close-project]")) {
-        closeProject();
+        closeProject("push");
         return;
       }
     });
@@ -4037,13 +4057,17 @@ window.MW = window.MW || {};
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") {
-        if (state.project) closeProject();
+        if (state.project) closeProject("push");
         else if (state.view === "hub" && reachIsOpen()) setReach(false);
         else if (state.view !== "hub") wipeTo("hub", null, "var(--accent)");
       }
     });
 
+    /* A fragment-only history move fires both; fromHash is a no-op
+       when nothing differs, so handling both is safe and means we
+       never miss one. */
     window.addEventListener("hashchange", fromHash);
+    window.addEventListener("popstate", fromHash);
   }
 
   /* ---------- boot ---------------------------------------- */
