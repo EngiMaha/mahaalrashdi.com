@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inside Maha's World</title>
+<meta name="description" content="An interactive portfolio prototype for Maha Alrashdi — Computer Science &amp; Engineering graduate, building AI agents and mobile systems.">
+<link rel="stylesheet" href="src/styles/tokens.css">
+<link rel="stylesheet" href="src/styles/base.css">
+<link rel="stylesheet" href="src/styles/layout.css">
+<link rel="stylesheet" href="src/styles/components.css">
+</head>
+<body>
+
+<a class="skip-link" id="skipLink" href="#main">Skip to content</a>
+
+<div class="bin bin-l" id="binL" aria-hidden="true"></div>
+<div class="bin bin-r" id="binR" aria-hidden="true"></div>
+
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="field-wash" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<div id="cursor" aria-hidden="true"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="dot" aria-hidden="true"></span>
+    <span id="brandName">Maha Alrashdi</span>
+    <small id="brandSub">Inside Maha's World</small>
+  </div>
+  <div class="topbar-tools">
+    <button class="chip lang-btn" id="langBtn">
+      <span class="globe" aria-hidden="true">&#9673;</span>
+      <span id="langLabel">العربية</span>
+    </button>
+    <button class="chip" id="themeBtn" aria-label="Theme">◒</button>
+  </div>
+</header>
+
+<nav class="spine" id="spine" aria-label="Sections"></nav>
+
+<main class="shell" id="main">
+  <div class="world hub" id="view-hub"></div>
+  <div class="world" id="view-engineer"></div>
+  <div class="world" id="view-creator"></div>
+  <div class="world" id="view-solver"></div>
+  <div class="world" id="view-maha"></div>
+</main>
+
+<div class="pview" id="pview" role="dialog" aria-modal="true" aria-label="Project"></div>
+
+<script src="src/js/data.shared.js"></script>
+<script src="src/js/data.en.js"></script>
+<script src="src/js/data.projects.en.js"></script>
+<script src="src/js/data.ar.js"></script>
+<script src="src/js/data.projects.ar.js"></script>
+<script src="src/js/field.js"></script>
+<script src="src/js/ui.js"></script>
+<script src="src/js/render.js"></script>
+<script src="src/js/render.project.js"></script>
+<script src="src/js/app.js"></script>
+</body>
+</html>

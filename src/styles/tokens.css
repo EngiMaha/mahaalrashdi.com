@@ -1,0 +1,229 @@
+/* ============================================================
+   Inside Maha's World — design tokens.
+
+   Light is the primary theme. Three states are handled:
+     :root                       -> complete light palette
+     prefers-color-scheme: dark  -> tokens only, guarded
+     [data-theme="dark"|"light"] -> explicit choice wins
+   Components must never read a colour outside this file.
+   ============================================================ */
+
+:root {
+  /* — ground ————————————————————————————————— */
+  --ground:        #FBF8F3;  /* warm cream paper */
+  --ground-deep:   #F2ECE1;  /* recessed cream  */
+  --ground-raise:  #FFFFFF;  /* lifted surface  */
+  --ground-veil:   rgba(251, 248, 243, 0.82);
+
+  /* — ink ———————————————————————————————————— */
+  --ink:           #17151C;  /* charcoal, violet cast */
+  --ink-soft:      #57525F;  /* chosen neutral, biased to accent */
+  --ink-faint:     #8B8593;
+
+  /* — line ——————————————————————————————————— */
+  --silver:        #CFCAD6;
+  --silver-faint:  #E4E0EA;
+
+  /* — accent ————————————————————————————————— */
+  --accent:        #6C4CF0;  /* electric purple */
+  --accent-soft:   #B7A4FF;  /* lavender */
+  --accent-wash:   #EEE9FF;
+  --accent-ink:    #FFFFFF;  /* text on accent */
+
+  /* — world accents, taken from each project's real source —— */
+  --w-sanad:       #008080;  /* AppColors.primaryTeal */
+  --w-mypath:      #A9702F;  /* mypathco.com bronze */
+  --w-beauty:      #5A6244;  /* "deep olive as the black" */
+  --w-advisor:     #6C4CF0;  /* the agentic one */
+
+  /* — the four perspectives: one family, four temperatures —— */
+  --w-engineer:    #6C4CF0;
+  --w-creator:     #9A5CD0;
+  --w-solver:      #5A6BE0;
+  --w-maha:        #B7A4FF;
+
+  /* — semantic ——————————————————————————————— */
+  --note:          #8A5A00;  /* "awaiting Maha's words" marker */
+  --note-wash:     #FBF1DE;
+
+  /* — form ——————————————————————————————————— */
+  --measure:       66ch;
+  --shell:         1180px;
+  --spine:         clamp(28px, 5vw, 84px);
+  --gut:           clamp(18px, 4vw, 40px);
+  --radius:        2px;      /* squared. only orbs are round. */
+
+  /* — type scale (fluid) ————————————————————— */
+  --t-hero:   clamp(3.4rem, 11vw, 9.5rem);
+  --t-d1:     clamp(2.4rem, 6.2vw, 5.2rem);
+  --t-d2:     clamp(1.9rem, 4vw, 3.2rem);
+  --t-d3:     clamp(1.35rem, 2.4vw, 1.95rem);
+  --t-lead:   clamp(1.08rem, 1.55vw, 1.4rem);
+  --t-body:   clamp(0.98rem, 1.05vw, 1.06rem);
+  --t-small:  0.875rem;
+  --t-label:  0.71rem;
+
+  /* — motion ————————————————————————————————— */
+  --ease:      cubic-bezier(0.22, 0.61, 0.36, 1);
+  --swoop:     cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:  180ms;
+  --dur:       420ms;
+  --dur-slow:  900ms;
+
+  --shadow-lift: 0 1px 2px rgba(23, 21, 28, 0.04),
+                 0 12px 34px -14px rgba(23, 21, 28, 0.14);
+  --shadow-deep: 0 2px 6px rgba(23, 21, 28, 0.06),
+                 0 40px 90px -30px rgba(23, 21, 28, 0.26);
+
+  color-scheme: light;
+}
+
+/* — dark, for viewers on system default —————————————————— */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:        #131019;
+    --ground-deep:   #0D0B12;
+    --ground-raise:  #1C1824;
+    --ground-veil:   rgba(19, 16, 25, 0.84);
+
+    --ink:           #F4F0F7;
+    --ink-soft:      #A9A2B6;
+    --ink-faint:     #6E677C;
+
+    --silver:        #3A3446;
+    --silver-faint:  #262130;
+
+    --accent:        #A88CFF;
+    --accent-soft:   #7C5CE0;
+    --accent-wash:   #241D3A;
+    --accent-ink:    #17151C;
+
+    --w-sanad:       #3FBEBE;
+    --w-mypath:      #D9A45F;
+    --w-beauty:      #A3AE84;
+    --w-advisor:     #A88CFF;
+
+    --w-engineer:    #A88CFF;
+    --w-creator:     #C79BEA;
+    --w-solver:      #93A4FF;
+    --w-maha:        #CFC0FF;
+
+    --note:          #E0B15E;
+    --note-wash:     #2A2113;
+
+    --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4),
+                   0 12px 34px -14px rgba(0, 0, 0, 0.7);
+    --shadow-deep: 0 2px 6px rgba(0, 0, 0, 0.5),
+                   0 40px 90px -30px rgba(0, 0, 0, 0.85);
+
+    color-scheme: dark;
+  }
+}
+
+/* — dark, chosen explicitly ——————————————————————————————— */
+:root[data-theme="dark"] {
+  --ground:        #131019;
+  --ground-deep:   #0D0B12;
+  --ground-raise:  #1C1824;
+  --ground-veil:   rgba(19, 16, 25, 0.84);
+
+  --ink:           #F4F0F7;
+  --ink-soft:      #A9A2B6;
+  --ink-faint:     #6E677C;
+
+  --silver:        #3A3446;
+  --silver-faint:  #262130;
+
+  --accent:        #A88CFF;
+  --accent-soft:   #7C5CE0;
+  --accent-wash:   #241D3A;
+  --accent-ink:    #17151C;
+
+  --w-sanad:       #3FBEBE;
+  --w-mypath:      #D9A45F;
+  --w-beauty:      #A3AE84;
+  --w-advisor:     #A88CFF;
+
+  --w-engineer:    #A88CFF;
+  --w-creator:     #C79BEA;
+  --w-solver:      #93A4FF;
+  --w-maha:        #CFC0FF;
+
+  --note:          #E0B15E;
+  --note-wash:     #2A2113;
+
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.4),
+                 0 12px 34px -14px rgba(0, 0, 0, 0.7);
+  --shadow-deep: 0 2px 6px rgba(0, 0, 0, 0.5),
+                 0 40px 90px -30px rgba(0, 0, 0, 0.85);
+
+  color-scheme: dark;
+}
+
+/* — light, chosen explicitly ——————————————————————————————— */
+:root[data-theme="light"] {
+  --ground:        #FBF8F3;
+  --ground-deep:   #F2ECE1;
+  --ground-raise:  #FFFFFF;
+  --ground-veil:   rgba(251, 248, 243, 0.82);
+
+  --ink:           #17151C;
+  --ink-soft:      #57525F;
+  --ink-faint:     #8B8593;
+
+  --silver:        #CFCAD6;
+  --silver-faint:  #E4E0EA;
+
+  --accent:        #6C4CF0;
+  --accent-soft:   #B7A4FF;
+  --accent-wash:   #EEE9FF;
+  --accent-ink:    #FFFFFF;
+
+  --w-sanad:       #008080;
+  --w-mypath:      #A9702F;
+  --w-beauty:      #5A6244;
+  --w-advisor:     #6C4CF0;
+
+  --w-engineer:    #6C4CF0;
+  --w-creator:     #9A5CD0;
+  --w-solver:      #5A6BE0;
+  --w-maha:        #B7A4FF;
+
+  --note:          #8A5A00;
+  --note-wash:     #FBF1DE;
+
+  color-scheme: light;
+}
+
+/* Arabic sizing.
+
+   Arabic runs smaller than Latin at the same nominal size, so the
+   whole scale steps up together. Scaling the TOKENS keeps every
+   size in the same relationship to every other, which is what
+   preserves the hierarchy; overriding font-size on individual
+   components does the opposite and flattens it. */
+html[dir="rtl"] {
+  --t-hero:   clamp(3rem, 9.5vw, 8.2rem);
+  --t-d1:     clamp(2.3rem, 5.6vw, 4.6rem);
+  --t-d2:     clamp(1.85rem, 3.7vw, 2.95rem);
+  --t-d3:     clamp(1.32rem, 2.3vw, 1.85rem);
+  --t-lead:   clamp(1.12rem, 1.6vw, 1.46rem);
+  --t-body:   clamp(1.02rem, 1.1vw, 1.11rem);
+  --t-small:  0.92rem;
+  --t-label:  0.79rem;
+  --measure:  60ch;
+}
+
+/* Each world re-points --world at its own accent.
+   NOTE: :root and [data-world=...] both score (0,1,0), so the
+   default MUST come first — otherwise it wins on source order
+   and the accent never changes. */
+:root                    { --world: var(--accent);     }
+[data-world="engineer"]  { --world: var(--w-engineer); }
+[data-world="creator"]   { --world: var(--w-creator);  }
+[data-world="solver"]    { --world: var(--w-solver);   }
+[data-world="maha"]      { --world: var(--w-maha);     }
+[data-project="sanad"]   { --world: var(--w-sanad);    }
+[data-project="mypath"]  { --world: var(--w-mypath);   }
+[data-project="beauty"]  { --world: var(--w-beauty);   }
+[data-project="advisor"] { --world: var(--w-advisor);  }

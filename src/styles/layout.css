@@ -1,0 +1,637 @@
+/* ============================================================
+   Layout — the observatory shell.
+
+   A drifting field behind everything; a hairline spine at the
+   edge that carries position and doubles as navigation; four
+   worlds that swap in place behind a colour wipe.
+   ============================================================ */
+
+/* — the field ——————————————————————————————————————————— */
+#field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.6s var(--ease);
+}
+#field.is-lit { opacity: 1; }
+
+.field-wash {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60vw 50vh at 12% 8%,  color-mix(in oklab, var(--world) 13%, transparent), transparent 68%),
+    radial-gradient(55vw 46vh at 88% 82%, color-mix(in oklab, var(--accent-soft) 16%, transparent), transparent 66%);
+  transition: background 1.2s var(--ease);
+}
+
+/* — shell ——————————————————————————————————————————————— */
+.shell { position: relative; z-index: 1; min-height: 100dvh; }
+
+.wrap {
+  width: min(100% - calc(var(--gut) * 2), var(--shell));
+  margin-inline: auto;
+}
+
+/* — spine : the hairline rail that IS the navigation ————— */
+.spine {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: var(--spine);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  pointer-events: none;
+}
+.spine::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--spine) / 2);
+  width: 1px;
+  background: linear-gradient(to bottom, transparent,
+    var(--silver-faint) 12%, var(--silver-faint) 88%, transparent);
+}
+
+.spine-tick {
+  position: relative;
+  pointer-events: auto;
+  width: 26px; height: 26px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.spine-tick i {
+  display: block;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--silver);
+  transition: transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.spine-tick:hover i { transform: scale(1.9); background: var(--ink-faint); }
+.spine-tick[aria-current="true"] i {
+  background: var(--world);
+  transform: scale(2.1);
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--world) 16%, transparent);
+}
+.spine-tick .tip {
+  position: absolute;
+  inset-inline-start: 130%;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+  pointer-events: none;
+}
+[dir="rtl"] .spine-tick .tip { transform: translateX(6px); }
+.spine-tick:hover .tip,
+.spine-tick:focus-visible .tip { opacity: 1; transform: translateX(0); }
+
+/* — top bar : brand, language, theme ————————————————————— */
+.topbar {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px clamp(18px, 4vw, 40px);
+  padding-inline-start: calc(var(--spine) + 8px);
+  background: linear-gradient(to bottom, var(--ground-veil), transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+.brand .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--world);
+  align-self: center;
+  transition: background var(--dur) var(--ease);
+}
+.brand small {
+  font-family: var(--font-sans);
+  font-size: var(--t-label);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+@media (max-width: 640px) { .brand small { display: none; } }
+
+.topbar-tools { display: flex; align-items: center; gap: 8px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--silver-faint);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ground-raise) 70%, transparent);
+  font-family: var(--font-sans);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.chip:hover { border-color: var(--world); color: var(--ink); }
+
+/* The language switch names its destination, so it holds a word
+   rather than a two-letter code. */
+.lang-btn {
+  height: 36px;
+  padding: 0 15px;
+  gap: 8px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--ink);
+  border-color: color-mix(in oklab, var(--world) 42%, var(--silver-faint));
+  background: color-mix(in oklab, var(--world) 7%, var(--ground-raise));
+}
+.lang-btn:hover { border-color: var(--world); background: var(--world); color: var(--accent-ink); }
+.lang-btn .globe { color: var(--world); font-size: 0.72rem; transition: color var(--dur-fast) var(--ease); }
+.lang-btn:hover .globe { color: var(--accent-ink); }
+
+/* — worlds swap in place ————————————————————————————————— */
+.world { display: none; padding-inline-start: var(--spine); }
+.world.is-open { display: block; }
+
+.world-head { padding-block: clamp(96px, 16vh, 190px) clamp(40px, 7vh, 76px); }
+.world-head .label { display: block; margin-bottom: 22px; }
+.world-head h2 { font-size: var(--t-d1); margin-bottom: 26px; }
+
+section.band { padding-block: clamp(52px, 9vh, 108px); }
+section.band + section.band { border-top: 1px solid var(--silver-faint); }
+
+.band-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: clamp(28px, 4vh, 52px);
+  flex-wrap: wrap;
+}
+.band-head h3 { font-size: var(--t-d2); }
+.band-head .label { padding-block: 6px; }
+
+/* ============================================================
+   HUB — the landing
+
+   A stage and four pillars. The greeting rests on a cream stage
+   that stops short of the fold; below it the ground turns
+   lavender and the four pillars float on it as pills, set in a
+   slow wave rather than a grid, so the landing reads as a place
+   rather than a menu.
+   ============================================================ */
+.hub.is-open {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100dvh;
+  padding-block: 0 clamp(48px, 8vh, 92px);
+  padding-inline-start: var(--spine);
+  position: relative;
+  isolation: isolate;
+  text-align: center;
+}
+
+/* the lavender ground the pillars float on */
+.hub::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  opacity: 0.94;
+  background:
+    radial-gradient(90vw 62vh at 50% 116%,
+      color-mix(in oklab, var(--accent) 20%, transparent), transparent 72%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--accent) 6%, var(--ground-deep)),
+      color-mix(in oklab, var(--accent) 12%, var(--ground-deep)));
+}
+
+/* — the stage : the cream panel that carries the greeting ——— */
+.hub-stage {
+  position: relative;
+  padding-block: clamp(96px, 15vh, 168px) clamp(44px, 7vh, 82px);
+  background: color-mix(in oklab, var(--ground) 90%, transparent);
+  border-end-start-radius: clamp(18px, 2.6vw, 38px);
+  border-end-end-radius: clamp(18px, 2.6vw, 38px);
+  box-shadow: 0 30px 70px -56px rgba(23, 21, 28, 0.5);
+}
+
+.hub-intro { margin-inline: auto; }
+.hub-ground { margin-inline: auto; }
+
+.hub-topline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: clamp(16px, 2.6vh, 28px);
+}
+.lang-invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 15px;
+  border: 1px solid color-mix(in oklab, var(--world) 38%, var(--silver-faint));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--world) 6%, transparent);
+  font-family: var(--font-sans);
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--world);
+  transition: background var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease),
+              transform var(--dur-fast) var(--ease);
+}
+.lang-invite:hover { background: var(--world); color: var(--accent-ink); transform: translateY(-1px); }
+
+.hub-hello {
+  font-size: var(--t-hero);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  margin-bottom: clamp(18px, 3vh, 32px);
+}
+.hub-hello .name { font-weight: 700; font-style: italic; color: var(--accent); }
+
+/* The headline is typed, not faded in. The caret is a real block
+   that blinks while typing and retires once the line is finished. */
+.hub-hello .t1,
+.hub-hello .t2 { white-space: pre-wrap; }
+
+.hub-hello .caret,
+.hub-line .caret {
+  display: inline-block;
+  width: 0.055em;
+  height: 0.78em;
+  background: var(--accent);
+  margin-inline-start: 0.05em;
+  vertical-align: -0.04em;
+  animation: caretBlink 1.05s steps(1) infinite;
+}
+@keyframes caretBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+/* at body size the headline's hairline caret would fall under a
+   pixel, so the lead's takes a fixed width instead of an em one */
+.hub-line .caret {
+  width: 2px;
+  height: 1.02em;
+  vertical-align: -0.18em;
+  margin-inline-start: 0.12em;
+}
+.hub-hello .caret.done,
+.hub-line .caret.done {
+  animation: none;
+  opacity: 0;
+  transition: opacity 700ms var(--ease);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hub-hello .caret,
+  .hub-line .caret { animation: none; opacity: 0; }
+}
+
+/* The lead is typed too. The twin carries the full text with
+   visibility hidden, so the paragraph stands at its final height
+   from the first frame; the typed copy lies over it, and the
+   pills below never move while the line fills in. Both wrap
+   identically because a growing prefix breaks lines the same way
+   the whole string does. */
+.hub-line {
+  position: relative;
+  max-width: 58ch;
+  margin-inline: auto;
+  text-align: center;
+}
+.hub-line .line-ghost { visibility: hidden; }
+.hub-line .line-typed {
+  position: absolute;
+  inset: 0;
+}
+
+/* — the four pillars ————————————————————————————————————————
+   One pill per pillar. They sit on a single line and alternate
+   up and down: a wave, not a row of four equal boxes. The note
+   hangs under the pill on hover, so nothing on the page moves
+   when it appears.
+   ============================================================ */
+.orbs {
+  --wave: clamp(40px, 6.6vh, 94px);
+  --tuck: clamp(4px, 2.3vw, 32px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  padding-block: clamp(30px, 5vh, 62px) clamp(56px, 8vh, 96px);
+}
+
+/* the slot carries the reveal and the wave; the pill inside it
+   carries the pointer gravity, so the two transforms never fight */
+.orb-slot { position: relative; display: block; }
+.orb-slot + .orb-slot { margin-inline-start: calc(var(--tuck) * -1); }
+.orb-slot:nth-child(odd) { margin-block-start: var(--wave); }
+.orb-slot:hover,
+.orb-slot:focus-within { z-index: 5; }
+
+.orb {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(196px, 22.6vw, 300px);
+  min-height: clamp(50px, 6.2vh, 66px);
+  padding: 10px clamp(18px, 2vw, 30px);
+  text-align: center;
+  border-radius: 999px;
+  color: var(--accent-ink);
+  background:
+    linear-gradient(140deg,
+      color-mix(in oklab, var(--accent) 90%, #FFFFFF) 0%,
+      var(--accent) 54%,
+      color-mix(in oklab, var(--accent) 88%, var(--pw, var(--accent))) 100%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, #FFFFFF 36%, transparent),
+    0 16px 34px -16px color-mix(in oklab, var(--accent) 78%, transparent);
+  transform: translate(var(--gx, 0px), var(--gy, 0px));
+  transition: transform var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              filter var(--dur) var(--ease);
+}
+.orb:hover, .orb:focus-visible {
+  filter: saturate(1.1) brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, #FFFFFF 44%, transparent),
+    0 26px 48px -18px color-mix(in oklab, var(--accent) 86%, transparent);
+}
+
+.orb-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.98rem, 1.42vw, 1.24rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+/* the note hangs off the pill — absolute, so nothing reflows */
+.orb-note {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(34ch, 74vw);
+  font-family: var(--font-serif);
+  font-size: var(--t-small);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+.orb:hover .orb-note,
+.orb:focus-visible .orb-note { opacity: 1; }
+
+/* the press. `scale` is its own property, so it composes with the
+   pointer-gravity translate instead of overwriting it. */
+.orb.is-pop { animation: orbPop 520ms var(--ease); }
+@keyframes orbPop {
+  0%   { scale: 1; }
+  38%  { scale: 0.945; }
+  100% { scale: 1; }
+}
+
+/* — the fifth pill : reaching her ————————————————————————————
+   Navigation is filled; an action is outlined. The panel opens
+   in flow under the pill, so nothing overlaps and the footer
+   simply moves down to make room.
+   ============================================================ */
+.reach {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.orb-ghost {
+  color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 11%, transparent);
+  border: 1.5px solid color-mix(in oklab, var(--accent) 56%, transparent);
+  box-shadow: none;
+}
+.orb-ghost:hover,
+.orb-ghost:focus-visible {
+  filter: none;
+  background: color-mix(in oklab, var(--accent) 14%, transparent);
+  border-color: var(--accent);
+  box-shadow: 0 16px 34px -20px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+/* drawn from two borders rather than set as a glyph — the arrow
+   characters are not in the Thmanyah faces and fall back badly */
+.orb-chev {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-inline-start: 12px;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  translate: 0 -2px;
+  transform: rotate(45deg);
+  transition: transform var(--dur) var(--ease);
+}
+.orb-ghost[aria-expanded="true"] .orb-chev { transform: rotate(225deg); }
+
+.reach-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  animation: reachIn 340ms var(--ease) both;
+}
+.reach-panel[hidden] { display: none; }
+@keyframes reachIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.reach-link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 11px clamp(18px, 2vw, 26px);
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--silver-faint));
+  background: color-mix(in oklab, var(--ground-raise) 74%, transparent);
+  text-align: start;
+  transition: transform var(--dur-fast) var(--ease),
+              border-color var(--dur-fast) var(--ease),
+              background var(--dur-fast) var(--ease),
+              box-shadow var(--dur-fast) var(--ease);
+}
+.reach-link b {
+  font-family: var(--font-sans);
+  font-size: var(--t-small);
+  font-weight: 500;
+  color: var(--ink);
+  unicode-bidi: isolate;
+}
+.reach-link:hover,
+.reach-link:focus-visible {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: var(--ground-raise);
+  box-shadow: var(--shadow-lift);
+}
+
+@media (max-width: 1080px) {
+  .orbs { --wave: 24px; --tuck: 0px; gap: 12px clamp(12px, 2vw, 22px); }
+  .orb-slot { flex: 0 0 auto; }
+  .orb-slot + .orb-slot { margin-inline-start: 0; }
+  .orb { width: clamp(200px, 40vw, 320px); }
+}
+@media (max-width: 720px) {
+  .orbs {
+    --wave: 0px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding-block: 30px 40px;
+  }
+  .orb-slot:nth-child(odd) { margin-block-start: 0; }
+  .orb { width: 100%; min-height: 58px; }
+  .orb-note { display: none; }
+  .reach { align-items: stretch; }
+  .reach-panel { flex-direction: column; }
+  .reach-link { align-items: center; }
+}
+
+/* — the transition veil ————————————————————————————————— */
+#veil {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background: var(--vw, var(--accent));
+  clip-path: circle(0% at var(--vx, 50%) var(--vy, 50%));
+}
+#veil.is-wiping { animation: wipe 900ms var(--swoop) forwards; }
+@keyframes wipe {
+  0%   { clip-path: circle(0% at var(--vx) var(--vy)); }
+  46%  { clip-path: circle(150% at var(--vx) var(--vy)); }
+  54%  { clip-path: circle(150% at var(--vx) var(--vy)); }
+  100% { clip-path: circle(0% at var(--vx) var(--vy)); }
+}
+
+/* — cursor ——————————————————————————————————————————————— */
+#cursor, #cursor-dot {
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 200;
+  pointer-events: none;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease),
+              width var(--dur) var(--ease),
+              height var(--dur) var(--ease),
+              background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+#cursor {
+  width: 30px; height: 30px;
+  border: 1px solid color-mix(in oklab, var(--world) 55%, transparent);
+  margin: -15px 0 0 -15px;
+}
+#cursor-dot {
+  width: 5px; height: 5px;
+  background: var(--world);
+  margin: -2.5px 0 0 -2.5px;
+}
+body.has-cursor #cursor, body.has-cursor #cursor-dot { opacity: 1; }
+body.cursor-hot #cursor {
+  width: 62px; height: 62px;
+  margin: -31px 0 0 -31px;
+  background: color-mix(in oklab, var(--world) 10%, transparent);
+  border-color: color-mix(in oklab, var(--world) 30%, transparent);
+}
+body.cursor-hot #cursor-dot { opacity: 0; }
+body.has-cursor { cursor: none; }
+body.has-cursor a, body.has-cursor button { cursor: none; }
+
+/* — reveal on scroll ————————————————————————————————————— */
+.rv {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 760ms var(--ease), transform 760ms var(--ease);
+}
+.rv.in { opacity: 1; transform: none; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 720px) {
+  :root { --spine: 0px; }
+
+  .spine {
+    inset-block-start: auto;
+    inset-block-end: 0;
+    inset-inline: 0;
+    width: auto;
+    height: 62px;
+    flex-direction: row;
+    justify-content: center;
+    gap: 6px;
+    padding-inline: 10px;
+    background: var(--ground-veil);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--silver-faint);
+    pointer-events: auto;
+  }
+  .spine::before { display: none; }
+  .spine-tick { width: 44px; height: 44px; }
+  .spine-tick .tip { display: none; }
+
+  .topbar { padding-inline: 16px; }
+
+  .hub.is-open { padding-block: 0 100px; min-height: auto; }
+  .hub-stage { padding-block: 104px 34px; }
+
+  .world { padding-bottom: 80px; }
+  .world-head { padding-block: 104px 30px; }
+}
+
+@media (hover: none) {
+  body.has-cursor { cursor: auto; }
+  #cursor, #cursor-dot { display: none; }
+}
