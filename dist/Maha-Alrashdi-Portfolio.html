@@ -65,11 +65,11 @@ img { max-width: 100%; }
   --radius:        2px;      /* squared. only orbs are round. */
 
   /* — type scale (fluid) ————————————————————— */
-  --t-hero:   clamp(3.4rem, 11vw, 9.5rem);
-  --t-d1:     clamp(2.4rem, 6.2vw, 5.2rem);
-  --t-d2:     clamp(1.9rem, 4vw, 3.2rem);
-  --t-d3:     clamp(1.35rem, 2.4vw, 1.95rem);
-  --t-lead:   clamp(1.08rem, 1.55vw, 1.4rem);
+  --t-hero:   clamp(2.6rem, 7.6vw, 6.4rem);
+  --t-d1:     clamp(1.95rem, 4.5vw, 3.6rem);
+  --t-d2:     clamp(1.55rem, 3vw, 2.4rem);
+  --t-d3:     clamp(1.18rem, 1.9vw, 1.5rem);
+  --t-lead:   clamp(1rem, 1.25vw, 1.16rem);
   --t-body:   clamp(0.98rem, 1.05vw, 1.06rem);
   --t-small:  0.875rem;
   --t-label:  0.71rem;
@@ -214,11 +214,11 @@ img { max-width: 100%; }
    preserves the hierarchy; overriding font-size on individual
    components does the opposite and flattens it. */
 html[dir="rtl"] {
-  --t-hero:   clamp(3rem, 9.5vw, 8.2rem);
-  --t-d1:     clamp(2.3rem, 5.6vw, 4.6rem);
-  --t-d2:     clamp(1.85rem, 3.7vw, 2.95rem);
-  --t-d3:     clamp(1.32rem, 2.3vw, 1.85rem);
-  --t-lead:   clamp(1.12rem, 1.6vw, 1.46rem);
+  --t-hero:   clamp(2.35rem, 6.6vw, 5.5rem);
+  --t-d1:     clamp(1.9rem, 4.1vw, 3.2rem);
+  --t-d2:     clamp(1.5rem, 2.8vw, 2.25rem);
+  --t-d3:     clamp(1.15rem, 1.8vw, 1.45rem);
+  --t-lead:   clamp(1.02rem, 1.3vw, 1.2rem);
   --t-body:   clamp(1.02rem, 1.1vw, 1.11rem);
   --t-small:  0.92rem;
   --t-label:  0.79rem;
@@ -588,7 +588,7 @@ img, canvas, svg { display: block; max-width: 100%; }
 .world { display: none; padding-inline-start: var(--spine); }
 .world.is-open { display: block; }
 
-.world-head { padding-block: clamp(96px, 16vh, 190px) clamp(40px, 7vh, 76px); }
+.world-head { padding-block: clamp(76px, 11vh, 140px) clamp(32px, 5vh, 58px); }
 .world-head .label { display: block; margin-bottom: 22px; }
 .world-head h2 { font-size: var(--t-d1); margin-bottom: 26px; }
 
@@ -644,7 +644,7 @@ section.band + section.band { border-top: 1px solid var(--silver-faint); }
 /* — the stage : the cream panel that carries the greeting ——— */
 .hub-stage {
   position: relative;
-  padding-block: clamp(96px, 15vh, 168px) clamp(44px, 7vh, 82px);
+  padding-block: clamp(74px, 11vh, 124px) clamp(34px, 5.5vh, 62px);
   background: color-mix(in oklab, var(--ground) 90%, transparent);
   border-end-start-radius: clamp(18px, 2.6vw, 38px);
   border-end-end-radius: clamp(18px, 2.6vw, 38px);
@@ -772,9 +772,9 @@ section.band + section.band { border-top: 1px solid var(--silver-faint); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: clamp(196px, 22.6vw, 300px);
-  min-height: clamp(50px, 6.2vh, 66px);
-  padding: 10px clamp(18px, 2vw, 30px);
+  width: clamp(190px, 21.5vw, 292px);
+  min-height: clamp(46px, 5.6vh, 58px);
+  padding: 10px clamp(15px, 1.7vw, 24px);
   text-align: center;
   border-radius: 999px;
   color: var(--accent-ink);
@@ -800,7 +800,7 @@ section.band + section.band { border-top: 1px solid var(--silver-faint); }
 
 .orb-title {
   font-family: var(--font-display);
-  font-size: clamp(0.98rem, 1.42vw, 1.24rem);
+  font-size: clamp(0.94rem, 1.28vw, 1.12rem);
   font-weight: 500;
   line-height: 1.3;
   letter-spacing: -0.012em;
@@ -1665,16 +1665,16 @@ body.has-cursor a, body.has-cursor button { cursor: none; }
    THE NEXT CHAPTER + contact
    ============================================================ */
 .closer {
-  min-height: 86vh;
+  min-height: 62vh;
   display: grid;
   align-content: center;
-  gap: clamp(26px, 4vh, 48px);
-  padding-block: clamp(60px, 10vh, 130px);
+  gap: clamp(20px, 3vh, 36px);
+  padding-block: clamp(46px, 7vh, 92px);
 }
 .closer-lines { display: grid; gap: 2px; }
 .closer-lines span {
   font-family: var(--font-display);
-  font-size: clamp(2.2rem, 6.4vw, 5rem);
+  font-size: clamp(1.6rem, 4.4vw, 3.4rem);
   font-weight: 300;
   line-height: 1.06;
   letter-spacing: -0.035em;
@@ -1685,7 +1685,7 @@ body.has-cursor a, body.has-cursor button { cursor: none; }
 .closer-lines span.final {
   color: var(--ink);
   font-weight: 300;
-  font-size: clamp(2rem, 5.6vw, 4.4rem);
+  font-size: clamp(1.5rem, 3.9vw, 3rem);
   line-height: 1.12;
   max-width: 20ch;
 }
