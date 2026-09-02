@@ -9,6 +9,13 @@
 <link rel="stylesheet" href="src/styles/base.css">
 <link rel="stylesheet" href="src/styles/layout.css">
 <link rel="stylesheet" href="src/styles/components.css">
+
+<!-- Cloudflare Web Analytics. It sits in the head on purpose: build.py
+     lifts only the document body into the single-file bundles, so
+     keeping the beacon up here is what stops it riding along into a
+     file meant to open from disk and make no network request at all. -->
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "5f09f9899ef24f74bb67e3600ee55edb"}'></script>
 </head>
 <body>
 

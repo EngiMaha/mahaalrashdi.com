@@ -41,8 +41,9 @@ JS = [
 ]
 
 TITLE = "Inside Maha's World"
-DESCRIPTION = ("An interactive portfolio prototype for Maha Alrashdi — "
-               "engineer, creator, problem solver.")
+DESCRIPTION = ("Maha Alrashdi — Computer Science & Engineering graduate "
+               "building generative AI agents and intelligent systems. "
+               "An interactive bilingual portfolio.")
 
 #: The standalone file is opened straight from disk, so it carries the
 #: whole document. The charset declaration is not optional: without it
@@ -92,10 +93,17 @@ def inline_fonts(css):
 
 
 def body_markup():
+    """Everything between the real body tags of index.html.
+
+    Anchored to the start of a line, because the tag name also appears
+    in prose inside an HTML comment up in the head — an unanchored
+    search matches that first and silently drags the whole head into
+    the bundle, analytics beacon and all.
+    """
     html = read("index.html")
-    m = re.search(r"<body>(.*?)</body>", html, re.S)
+    m = re.search(r"^<body>$(.*?)^</body>$", html, re.S | re.M)
     if not m:
-        raise SystemExit("could not find <body> in index.html")
+        raise SystemExit("could not find the body tags in index.html")
     return re.sub(r'\s*<script src="[^"]+"></script>', "", m.group(1)).strip()
 
 
