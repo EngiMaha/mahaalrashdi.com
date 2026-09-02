@@ -2,8 +2,8 @@
 """Render the share cards in tools/ to PNGs in public/.
 
 og.png is what LinkedIn, WhatsApp and X show when the link is shared.
-promo.png is the square card to post by hand. Run after editing
-either template:
+promo.png and invite.png are square cards to post by hand. Run
+after editing any template:
 
     python tools/make-og.py
 """
@@ -18,6 +18,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CARDS = [
     ("og-template.html",    "og.png",    1200,  630),
     ("promo-template.html", "promo.png", 1200, 1200),
+    ("invite-template.html", "invite.png", 1200, 1200),
 ]
 
 #: Any Chromium will do; these are the usual Windows and Linux homes.
