@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>Promo card</title>
+<!--
+  Source for public/promo.png — the image to post on LinkedIn, with
+  the link in the first comment.
+
+  1200x1200. Square, because a square takes more vertical room in the
+  LinkedIn feed than a landscape card and so holds the scroll longer.
+
+  Every claim here is taken from the site's own content files. Each
+  fact carries the Arabic line first and the English under it, in the
+  same order the site reads.
+-->
+<style>
+  @font-face { font-family: "Thmanyah Display"; font-weight: 300;
+    src: url("../public/fonts/thmanyahserifdisplay-Light.woff2") format("woff2"); }
+  @font-face { font-family: "Thmanyah Display"; font-weight: 700;
+    src: url("../public/fonts/thmanyahserifdisplay-Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Thmanyah Sans"; font-weight: 400;
+    src: url("../public/fonts/thmanyahsans-Regular.woff2") format("woff2"); }
+  @font-face { font-family: "Thmanyah Sans"; font-weight: 500;
+    src: url("../public/fonts/thmanyahsans-Medium.woff2") format("woff2"); }
+  @font-face { font-family: "Thmanyah Sans"; font-weight: 700;
+    src: url("../public/fonts/thmanyahsans-Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Thmanyah Serif"; font-weight: 300;
+    src: url("../public/fonts/thmanyahseriftext-Light.woff2") format("woff2"); }
+
+  :root {
+    --ground: #FBF8F3;
+    --ink: #17151C;
+    --ink-soft: #57525F;
+    --ink-faint: #8B8593;
+    --accent: #6C4CF0;
+    --accent-soft: #B7A4FF;
+    --line: #E4E0EA;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 1200px; overflow: hidden; }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    padding: 74px 76px 66px;
+    background:
+      radial-gradient(60% 46% at 100% 0%,
+        color-mix(in oklab, var(--accent-soft) 40%, transparent), transparent 70%),
+      radial-gradient(66% 50% at 0% 100%,
+        color-mix(in oklab, var(--accent) 24%, transparent), transparent 72%),
+      var(--ground);
+    color: var(--ink);
+    font-family: "Thmanyah Sans", system-ui, sans-serif;
+  }
+
+  /* — the question ————————————————————————————— */
+  .ask { margin-bottom: 34px; }
+
+  .ask h1 {
+    font-family: "Thmanyah Display", Georgia, serif;
+    font-weight: 300;
+    font-size: 90px;
+    line-height: 1;
+    letter-spacing: -0.035em;
+    margin-bottom: 14px;
+  }
+  .ask h1 b { font-weight: 700; font-style: italic; color: var(--accent); }
+
+  .ask .en {
+    direction: ltr;
+    text-align: right;
+    font-size: 26px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+  }
+
+  /* — the facts ———————————————————————————————— */
+  /* spread the facts across the space rather than centring them as a
+     block, which left a dead band above and below */
+  .facts {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    padding-block: 12px;
+  }
+
+  .fact {
+    display: grid;
+    grid-template-columns: 62px 1fr;
+    align-items: start;
+    gap: 22px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .fact:last-child { border-bottom: 0; padding-bottom: 0; }
+
+  .fact .n {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: 12px;
+  }
+
+  .fact .ar {
+    font-family: "Thmanyah Display", Georgia, serif;
+    font-weight: 300;
+    font-size: 35px;
+    line-height: 1.36;
+    letter-spacing: -0.015em;
+    margin-bottom: 6px;
+  }
+  .fact .ar em { font-style: normal; color: var(--accent); font-weight: 700; }
+  /* Latin inside an Arabic line gets its own bidi scope, otherwise a
+     trailing full stop jumps to the wrong end of the name. */
+  .fact .ar i { font-style: normal; unicode-bidi: isolate; }
+
+  .fact .en {
+    direction: ltr;
+    text-align: left;
+    font-family: "Thmanyah Serif", Georgia, serif;
+    font-weight: 300;
+    font-size: 23px;
+    line-height: 1.44;
+    color: var(--ink-soft);
+  }
+
+  /* — the address ——————————————————————————————— */
+  .foot {
+    margin-top: 32px;
+    padding-top: 26px;
+    border-top: 2px solid color-mix(in oklab, var(--accent) 30%, transparent);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .foot .domain {
+    direction: ltr;
+    font-size: 40px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--accent);
+  }
+  .foot .cta {
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--ink-faint);
+  }
+</style>
+</head>
+<body>
+
+<div class="ask">
+  <h1>مين <b>مها؟</b></h1>
+  <div class="en">WHO IS MAHA?</div>
+</div>
+
+<div class="facts">
+
+  <div class="fact">
+    <div class="n">01</div>
+    <div>
+      <div class="ar">بكالوريوس علوم وهندسة الحاسب — جامعة حفر الباطن.</div>
+      <div class="en">Bachelor of Computer Science &amp; Engineering, University of Hafar Al-Batin.</div>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div class="n">02</div>
+    <div>
+      <div class="ar">أبني <em>وكلاء ذكاء اصطناعي</em> وحلولًا تسخّر نماذج اللغة الكبيرة لمشكلات حقيقية.</div>
+      <div class="en">I build AI agents and LLM-powered solutions for real problems.</div>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div class="n">03</div>
+    <div>
+      <div class="ar"><em>الميدالية الذهبية</em> في هاكاثون <i>Kanz AI</i> عن مشروع <i>My Path</i>.</div>
+      <div class="en">Gold Medal · Kanz AI Hackathon — for My Path.</div>
+    </div>
+  </div>
+
+  <div class="fact">
+    <div class="n">04</div>
+    <div>
+      <div class="ar">خبرة عملية في القطاع التقني بوزارة الدفاع، وثلاث سنوات دراسة في الولايات المتحدة.</div>
+      <div class="en">Hands-on IT experience at the Ministry of Defense, and three years of study in the United States.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="foot">
+  <span class="domain">mahaalrashdi.com</span>
+  <span class="cta">القصة كاملة · The full story</span>
+</div>
+
+</body>
+</html>

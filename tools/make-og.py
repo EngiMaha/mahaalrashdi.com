@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Render tools/og-template.html to public/og.png.
+"""Render the share cards in tools/ to PNGs in public/.
 
-That PNG is what LinkedIn, WhatsApp and X show when the site is
-shared. Run it after editing the template:
+og.png is what LinkedIn, WhatsApp and X show when the link is shared.
+promo.png is the square card to post by hand. Run after editing
+either template:
 
     python tools/make-og.py
 """
@@ -12,8 +13,12 @@ import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE = os.path.join(ROOT, "tools", "og-template.html")
-OUT = os.path.join(ROOT, "public", "og.png")
+#: (template, output, width, height) — the link preview card the
+#: platforms fetch, and the square promo card to post by hand.
+CARDS = [
+    ("og-template.html",    "og.png",    1200,  630),
+    ("promo-template.html", "promo.png", 1200, 1200),
+]
 
 #: Any Chromium will do; these are the usual Windows and Linux homes.
 BROWSERS = [
@@ -32,24 +37,32 @@ def browser():
     sys.exit("no Chromium-based browser found; add yours to BROWSERS")
 
 
-def main():
+def render(exe, template, out, width, height):
+    src = os.path.join(ROOT, "tools", template)
+    dst = os.path.join(ROOT, "public", out)
     subprocess.run([
-        browser(),
+        exe,
         "--headless=new",
         "--disable-gpu",
         "--hide-scrollbars",
         "--allow-file-access-from-files",
         "--force-device-scale-factor=1",
-        "--window-size=1200,630",
+        "--window-size=%d,%d" % (width, height),
         "--virtual-time-budget=5000",
-        "--screenshot=" + OUT,
-        "file:///" + TEMPLATE.replace("\\", "/"),
+        "--screenshot=" + dst,
+        "file:///" + src.replace("\\", "/"),
     ], check=True, capture_output=True)
 
-    if not os.path.exists(OUT):
-        sys.exit("render produced no file")
-    print("wrote %s  %.0f KB" % (
-        os.path.relpath(OUT, ROOT), os.path.getsize(OUT) / 1024.0))
+    if not os.path.exists(dst):
+        sys.exit("render produced no file for " + template)
+    print("wrote %-18s %5.0f KB  %dx%d" % (
+        os.path.relpath(dst, ROOT), os.path.getsize(dst) / 1024.0, width, height))
+
+
+def main():
+    exe = browser()
+    for template, out, w, h in CARDS:
+        render(exe, template, out, w, h)
 
 
 if __name__ == "__main__":
