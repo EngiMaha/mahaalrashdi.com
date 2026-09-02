@@ -76,9 +76,6 @@ window.MW = window.MW || {};
         '<div class="wrap hub-intro">' +
           '<div class="hub-topline rv">' +
             '<span class="label">' + h.eyebrow + '</span>' +
-            '<button class="lang-invite" data-lang-switch>' +
-              '<span aria-hidden="true">&#9673;</span> ' + L.ui.switchTo +
-            '</button>' +
           '</div>' +
           '<h1 class="hub-hello" id="hubHello"' +
             ' data-t1="' + esc(h.hello) + '" data-t2="' + esc(h.name) + '">' +

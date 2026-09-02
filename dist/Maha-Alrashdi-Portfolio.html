@@ -662,24 +662,6 @@ section.band + section.band { border-top: 1px solid var(--silver-faint); }
   flex-wrap: wrap;
   margin-bottom: clamp(16px, 2.6vh, 28px);
 }
-.lang-invite {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 15px;
-  border: 1px solid color-mix(in oklab, var(--world) 38%, var(--silver-faint));
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--world) 6%, transparent);
-  font-family: var(--font-sans);
-  font-size: 0.83rem;
-  font-weight: 500;
-  color: var(--world);
-  transition: background var(--dur-fast) var(--ease),
-              color var(--dur-fast) var(--ease),
-              transform var(--dur-fast) var(--ease);
-}
-.lang-invite:hover { background: var(--world); color: var(--accent-ink); transform: translateY(-1px); }
-
 .hub-hello {
   font-size: var(--t-hero);
   font-weight: 300;
@@ -3353,9 +3335,6 @@ window.MW = window.MW || {};
         '<div class="wrap hub-intro">' +
           '<div class="hub-topline rv">' +
             '<span class="label">' + h.eyebrow + '</span>' +
-            '<button class="lang-invite" data-lang-switch>' +
-              '<span aria-hidden="true">&#9673;</span> ' + L.ui.switchTo +
-            '</button>' +
           '</div>' +
           '<h1 class="hub-hello" id="hubHello"' +
             ' data-t1="' + esc(h.hello) + '" data-t2="' + esc(h.name) + '">' +
@@ -4012,11 +3991,6 @@ window.MW = window.MW || {};
   /* ---------- events -------------------------------------- */
   function wire() {
     document.addEventListener("click", function (e) {
-      if (e.target.closest("[data-lang-switch]")) {
-        setLang(state.lang === "en" ? "ar" : "en");
-        return;
-      }
-
       var reach = e.target.closest("[data-reach]");
       if (reach) {
         pop(reach);

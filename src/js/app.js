@@ -268,11 +268,6 @@ window.MW = window.MW || {};
   /* ---------- events -------------------------------------- */
   function wire() {
     document.addEventListener("click", function (e) {
-      if (e.target.closest("[data-lang-switch]")) {
-        setLang(state.lang === "en" ? "ar" : "en");
-        return;
-      }
-
       var reach = e.target.closest("[data-reach]");
       if (reach) {
         pop(reach);
